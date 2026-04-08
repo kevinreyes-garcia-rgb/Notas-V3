@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NotsCreator Ultra - Black & Purple</title>
+    <title>NotsCreator Ultra PRO</title>
     <style>
         :root {
             --bg: #050505;
             --panel: #121212;
-            --primary: #bc13fe; /* Morado Eléctrico */
-            --secondary: #00f2ff; /* Cian Neón */
+            --primary: #bc13fe;
+            --secondary: #00f2ff;
             --text: #ffffff;
-            --line-color: rgba(188, 19, 254, 0.4);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
 
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
@@ -25,221 +24,329 @@
             height: 100vh;
         }
 
-        /* Header Estilo Cyberpunk */
         .header {
-            padding: 15px;
+            padding: 10px;
             text-align: center;
             background: var(--panel);
-            border-bottom: 3px solid var(--primary);
-            box-shadow: 0 0 15px var(--primary);
+            border-bottom: 2px solid var(--primary);
         }
 
-        .header h1 { 
-            font-size: 1.8rem; 
-            text-transform: uppercase; 
-            letter-spacing: 3px; 
-            color: var(--primary);
-            text-shadow: 0 0 10px var(--primary);
-        }
-
-        /* Selector de Instrumentos */
         .instrument-selector {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            padding: 15px;
+            gap: 8px;
+            padding: 10px;
             background: #1a1a1a;
+            flex-wrap: wrap;
         }
 
         .inst-btn {
             background: transparent;
             border: 2px solid var(--primary);
             color: var(--primary);
-            padding: 8px 15px;
+            padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.3s;
+            font-size: 0.8rem;
         }
 
         .inst-btn.active {
             background: var(--primary);
             color: white;
-            box-shadow: 0 0 20px var(--primary);
+            box-shadow: 0 0 15px var(--primary);
         }
 
-        /* Área de Edición */
         .editor-wrapper {
             flex-grow: 1;
             overflow-x: auto;
-            overflow-y: hidden;
-            padding: 40px 20px;
+            padding: 20px;
             display: flex;
             align-items: center;
         }
 
         #staff-container {
             position: relative;
-            min-width: 2000px; /* Muy largo para poder componer */
+            min-width: 2500px;
             height: 300px;
             background: var(--panel);
-            border-radius: 15px;
             border: 1px solid #333;
-            cursor: crosshair;
         }
 
         .line {
             position: absolute;
             width: 100%;
             height: 2px;
-            background: var(--line-color);
-            box-shadow: 0 0 5px var(--primary);
+            background: rgba(188, 19, 254, 0.3);
             pointer-events: none;
         }
 
-        /* Notas (Puntos) */
         .note-dot {
             position: absolute;
-            width: 24px;
-            height: 24px;
-            background: var(--secondary);
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 15px var(--secondary);
             z-index: 10;
             border: 2px solid white;
         }
 
-        /* Controles Inferiores */
+        /* Línea de reproducción */
+        #playback-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--secondary);
+            box-shadow: 0 0 15px var(--secondary);
+            z-index: 20;
+            display: none;
+        }
+
         .bottom-bar {
-            padding: 20px;
+            padding: 15px;
             background: var(--panel);
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 10px;
             border-top: 1px solid #333;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 15px 30px;
-            border-radius: 50px;
+            padding: 10px 20px;
+            border-radius: 5px;
             border: none;
             font-weight: bold;
-            text-transform: uppercase;
             cursor: pointer;
-            font-size: 1rem;
         }
 
-        .btn-play { background: var(--secondary); color: #000; box-shadow: 0 0 10px var(--secondary); }
+        .btn-play { background: var(--secondary); color: #000; }
+        .btn-save { background: var(--primary); color: white; }
         .btn-clear { background: #ff4b2b; color: white; }
 
+        #saved-songs-list {
+            padding: 10px;
+            background: #111;
+            max-height: 100px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+        
+        .song-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            border-bottom: 1px solid #222;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>NotsCreator PRO</h1>
-    </div>
+    <div class="header"><h1>NotsCreator PRO</h1></div>
 
     <div class="instrument-selector">
-        <button class="inst-btn active" onclick="setInstrument('guitar', 6)">🎸 GUITARRA (6)</button>
-        <button class="inst-btn" onclick="setInstrument('bass', 4)">🎸 BAJO (4)</button>
-        <button class="inst-btn" onclick="setInstrument('piano', 5)">🎹 PIANO (5)</button>
-        <button class="inst-btn" onclick="setInstrument('drums', 4)">🥁 BATERÍA (4)</button>
+        <button class="inst-btn active" onclick="setInstrument('guitar', 6)">🎸 GUITARRA</button>
+        <button class="inst-btn" onclick="setInstrument('bass', 4)">🎸 BAJO</button>
+        <button class="inst-btn" onclick="setInstrument('piano', 5)">🎹 PIANO</button>
+        <button class="inst-btn" onclick="setInstrument('drums', 4)">🥁 BATERÍA</button>
     </div>
 
     <div class="editor-wrapper">
         <div id="staff-container">
-            </div>
+            <div id="playback-line"></div>
+        </div>
     </div>
+
+    <div id="saved-songs-list"></div>
 
     <div class="bottom-bar">
         <button class="btn btn-clear" onclick="clearBoard()">LIMPIAR</button>
-        <button class="btn btn-play" onclick="playEffect()">REPRODUCIR</button>
+        <button class="btn btn-save" onclick="saveSong()">💾 GUARDAR</button>
+        <button class="btn btn-play" onclick="startPlayback()">▶ REPRODUCIR</button>
     </div>
 
     <script>
         const container = document.getElementById('staff-container');
+        const playLine = document.getElementById('playback-line');
+        const songListDiv = document.getElementById('saved-songs-list');
         let currentLines = 6;
+        let instrument = 'guitar';
+        let isPlaying = false;
 
-        // Función para dibujar las líneas
+        // --- Lógica de Instrumentos ---
+        function setInstrument(name, lines) {
+            instrument = name;
+            currentLines = lines;
+            document.querySelectorAll('.inst-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            drawStaff(lines);
+        }
+
         function drawStaff(num) {
-            container.innerHTML = ''; // Limpiar todo
-            const height = container.clientHeight;
-            const spacing = height / (num + 1);
-
+            const notes = document.querySelectorAll('.note-dot');
+            container.innerHTML = '<div id="playback-line"></div>';
+            const spacing = container.clientHeight / (num + 1);
             for (let i = 1; i <= num; i++) {
                 const line = document.createElement('div');
                 line.className = 'line';
                 line.style.top = (i * spacing) + 'px';
                 container.appendChild(line);
             }
+            // Re-agregar notas si existían (opcional, aquí las limpia para cambiar modo)
         }
 
-        // Cambiar instrumento
-        function setInstrument(name, lines) {
-            currentLines = lines;
-            // Estilo de botones
-            document.querySelectorAll('.inst-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+        // --- Sonidos Reales (Sintetizador avanzado) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playInstrumentSound(freq) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (instrument === 'guitar') {
+                osc.type = 'sawtooth';
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.8);
+            } else if (instrument === 'bass') {
+                osc.type = 'triangle';
+                osc.frequency.value = freq / 2;
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1);
+            } else if (instrument === 'piano') {
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.5);
+            } else { // Batería (Ruido blanco)
+                playDrum();
+                return;
+            }
             
-            drawStaff(lines);
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 1.5);
         }
 
-        // Colocar notas (PC y Android)
+        function playDrum() {
+            const bufferSize = audioCtx.sampleRate * 0.1;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 800;
+            noise.connect(filter);
+            filter.connect(audioCtx.destination);
+            noise.start();
+        }
+
+        // --- Manejo de Notas ---
         function placeNote(clientX, clientY) {
             const rect = container.getBoundingClientRect();
-            const x = clientX - rect.left;
+            const x = clientX - rect.left + container.scrollLeft;
             const y = clientY - rect.top;
-
-            // Magnetismo a la línea
             const spacing = container.clientHeight / (currentLines + 1);
-            const closestLine = Math.round(y / spacing);
+            const lineIndex = Math.round(y / spacing);
             
-            if (closestLine > 0 && closestLine <= currentLines) {
+            if (lineIndex > 0 && lineIndex <= currentLines) {
                 const note = document.createElement('div');
                 note.className = 'note-dot';
+                note.style.backgroundColor = instrument === 'guitar' ? '#bc13fe' : (instrument === 'bass' ? '#00f2ff' : '#ffea00');
                 note.style.left = x + 'px';
-                note.style.top = (closestLine * spacing) + 'px';
+                note.style.top = (lineIndex * spacing) + 'px';
+                note.dataset.freq = 200 + ( (currentLines - lineIndex) * 50);
                 
-                // Borrar nota si se toca de nuevo
                 note.onclick = (e) => { e.stopPropagation(); note.remove(); };
-                
                 container.appendChild(note);
-                playTone(200 + (closestLine * 50));
+                playInstrumentSound(parseFloat(note.dataset.freq));
             }
         }
 
-        // Eventos
         container.addEventListener('mousedown', (e) => placeNote(e.clientX, e.clientY));
-        container.addEventListener('touchstart', (e) => {
-            const touch = e.touches[0];
-            placeNote(touch.clientX, touch.clientY);
-        });
+        container.addEventListener('touchstart', (e) => placeNote(e.touches[0].clientX, e.touches[0].clientY));
+
+        // --- Reproducción y Guardado ---
+        function startPlayback() {
+            if (isPlaying) return;
+            isPlaying = true;
+            let pos = 0;
+            const line = document.getElementById('playback-line');
+            line.style.display = 'block';
+
+            const interval = setInterval(() => {
+                pos += 5;
+                line.style.left = pos + 'px';
+                
+                // Detectar notas al pasar
+                const notes = document.querySelectorAll('.note-dot');
+                notes.forEach(n => {
+                    const noteX = parseFloat(n.style.left);
+                    if (pos >= noteX && pos < noteX + 10) {
+                        playInstrumentSound(parseFloat(n.dataset.freq));
+                    }
+                });
+
+                if (pos > 2500) {
+                    clearInterval(interval);
+                    line.style.display = 'none';
+                    isPlaying = false;
+                }
+            }, 30);
+        }
+
+        function saveSong() {
+            const name = prompt("Nombre de la canción:");
+            if (!name) return;
+            const notes = [];
+            document.querySelectorAll('.note-dot').forEach(n => {
+                notes.push({ x: n.style.left, y: n.style.top, f: n.dataset.freq, c: n.style.backgroundColor });
+            });
+            const songs = JSON.parse(localStorage.getItem('my_songs') || '[]');
+            songs.push({ name, notes });
+            localStorage.setItem('my_songs', JSON.stringify(songs));
+            loadSongList();
+        }
+
+        function loadSongList() {
+            const songs = JSON.parse(localStorage.getItem('my_songs') || '[]');
+            songListDiv.innerHTML = '<strong>Mis canciones:</strong>';
+            songs.forEach((s, idx) => {
+                const div = document.createElement('div');
+                div.className = 'song-item';
+                div.innerHTML = `<span>${s.name}</span> <button onclick="loadSong(${idx})">Cargar</button>`;
+                songListDiv.appendChild(div);
+            });
+        }
+
+        function loadSong(idx) {
+            const songs = JSON.parse(localStorage.getItem('my_songs') || '[]');
+            const song = songs[idx];
+            clearBoard();
+            song.notes.forEach(n => {
+                const div = document.createElement('div');
+                div.className = 'note-dot';
+                div.style.left = n.x;
+                div.style.top = n.y;
+                div.style.backgroundColor = n.c;
+                div.dataset.freq = n.f;
+                div.onclick = (e) => { e.stopPropagation(); div.remove(); };
+                container.appendChild(div);
+            });
+        }
 
         function clearBoard() {
-            drawStaff(currentLines);
+            const notes = document.querySelectorAll('.note-dot');
+            notes.forEach(n => n.remove());
         }
 
-        // Sonido de feedback
-        function playTone(freq) {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const g = ctx.createGain();
-            osc.frequency.value = freq;
-            osc.connect(g);
-            g.connect(ctx.destination);
-            g.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.4);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.4);
-        }
-
-        function playEffect() {
-            alert("Reproduciendo tu creación...");
-        }
-
-        // Ejecutar al cargar la página
-        window.onload = () => drawStaff(6);
+        window.onload = () => {
+            drawStaff(6);
+            loadSongList();
+        };
     </script>
 </body>
 </html>
